@@ -47,6 +47,24 @@ bash <(wget --no-check-certificate -O - 'https://raw.githubusercontent.com/Sinus
 
 This command basically downloads the latest version of the installer-script and executes it via the bash.
 
+## Windows
+
+The official Windows build of the SinusBot is discontinued. [`windows/sinusbot_installer.ps1`](windows/sinusbot_installer.ps1) runs the current Linux build on Windows 10/11 (x64) instead, using one of two backends:
+
+- **WSL2** (default): creates its own WSL2 distribution `SinusBot` (Ubuntu 22.04 with systemd) under `C:\SinusBot` and runs this Linux installer inside it, so you always get the latest SinusBot and TeamSpeak client. A scheduled task keeps the bot running while you are logged on. WSL itself is installed automatically if it is missing (needs administrator rights once and a reboot).
+- **Docker**: runs the official [`sinusbot/docker`](https://hub.docker.com/r/sinusbot/docker) image with Docker Desktop. Data and scripts live in the Docker volumes `SinusBot-data` and `SinusBot-scripts`.
+
+Open PowerShell in the repository folder and run:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\windows\sinusbot_installer.ps1                # WSL2, interactive menu
+powershell -ExecutionPolicy Bypass -File .\windows\sinusbot_installer.ps1 -Mode Docker   # Docker Desktop
+```
+
+Actions can also be passed directly: `-Action Install|Update|Remove|Start|Stop|Status|PasswordReset`. Afterwards the web interface is reachable at <http://localhost:8087>.
+
+To reach the web interface from other devices in your network while using WSL2, enable mirrored networking (`networkingMode=mirrored` in `%UserProfile%\.wslconfig`) and allow port 8087 in the Windows firewall.
+
 ## Contribution
 
 If you want to contribute, the sourcecode is formatted with the [shell-format](https://marketplace.visualstudio.com/items?itemName=foxundermoon.shell-format) extension from VS Code.
